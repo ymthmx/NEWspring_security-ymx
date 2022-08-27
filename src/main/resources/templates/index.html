@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+        lang="en">
+<head>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>油焖虾新闻平台</title>
+
+<!--    <link th:href="@{/login/css/mycss.css}" rel="stylesheet"/>-->
+    <link rel="stylesheet" th:href="@{/login/css/semantic.css}" media="screen" title="no title" charset="utf-8">
+    <link rel="stylesheet" th:href="@{/login/css/index.css}" media="screen" title="no title" charset="utf-8">
+</head>
+
+<body>
+
+<!--网页首部开始-->
+<div class="ui red basic segment  topmenu">
+    <div class="ui borderless menu container" style="border:0;box-shadow:none;">
+        <div class="header item" style="margin-right:10px;">
+            <div class="ui image">
+                <img th:src="@{/login/img/login.jpg}" alt="图片未加载" style="width: 60px" src="">
+            </div>
+        </div>
+        <div class="item" style="margin-right:10px;">
+            <a href="/">首页</a>
+        </div>
+        <div class="item" style="margin-right:10px;">
+            <a th:href="@{/commonpage}">普通会员 - 新闻专栏</a>
+        </div>
+        <div class="item" style="margin-right:10px;">
+            <a th:href="@{/vippage}">VIP会员 - 专享专栏</a>
+        </div>
+        <div class="item" style="margin-right:10px;">
+            <span sec:authorize="isAuthenticated()">
+                <a th:href="@{/user}" style="color: black"><b>个人信息</b></a>
+            </span>
+
+            <!--            <a href="#">不许无聊</a>-->
+        </div>
+
+        <div class="item" style="margin-right:10px;">
+            <span sec:authorize="hasAuthority('ROLE_admin')">
+			<a th:href="@{/detailuser}" style="color: black"><b>管理界面</b></a>
+             </span>
+        </div>
+
+
+        <div class="right menu login" sec:authorize="isAnonymous()">
+            <div class="item" style="width: 60px;" align="center">
+                <a th:href="@{/userLogin}" style="width: 20px">
+                    <div class="ui image">
+                        <img th:src="@{/login/img/index/login.png}"
+                             style="width: 20px;margin-left: 3px;vertical-align: middle" alt=""/>
+                    </div>
+                    <p style="margin-right:10px;margin-top:6px;color:black;width: 28px">登录</p>
+                </a>
+
+            </div>
+            <div class="item" style=" width: 60px">
+                <a th:href="@{/userRegister}" style="width: 20px">
+                    <div class="ui image">
+                        <img th:src="@{/login/img/index/register.png}"
+                             style="width: 30px;margin-left: 3px;vertical-align: middle" alt=""/>
+                    </div>
+                    <p style="color:black;margin-top:6px;width: 28px">注册</p>
+                </a>
+
+            </div>
+        </div>
+        <div sec:authorize="isAuthenticated()" class="right menu login">
+            <!--<div>-->
+            <div class="item">
+                尊敬的 <span sec:authentication="name" style="color: #0e69cb;"></span>,您好!&nbsp;&nbsp;
+
+                您的权限：<span sec:authentication="principal.authorities" style="color:#66c256"></span>
+                <br>
+                <!--		authorize="hasAuthority('ROLE_vip')"-->
+
+            </div>
+            <div class="item">
+                <form th:action="@{/logout}" method="post">
+                    <label>
+
+                        <input th:type="submit" th:value="注销"/>
+                    </label>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!--网页首部结束-->
+
+<!--<div>-->
+<!--    <h3>游客 - 新闻专栏</h3>-->
+<!--    <ul>-->
+<!--        <li><a th:href="@{/detail/visitor/1}">新闻1：悟空非空也带你学习 Java </a></li>-->
+<!--        <li><a th:href="@{/detail/visitor/2}">新闻2：悟空非空也带你学习 Python </a></li>-->
+<!--        <li><a th:href="@{/detail/visitor/3}">新闻3：悟空非空也带你学习 C++ </a></li>-->
+<!--    </ul>-->
+<!--</div>-->
+
+<!--<div sec:authorize="hasRole('common')">-->
+<!--<div sec:authorize="hasRole('common') || hasRole('vip')">-->
+<!--<div>-->
+<!--    <h3>普通会员 - 新闻专栏</h3>-->
+<!--    <ul>-->
+<!--        <li><a th:href="@{/detail/common/1}">普通会员新闻：1 </a></li>-->
+<!--        <li><a th:href="@{/detail/common/2}">普通会员新闻：2 </a></li>-->
+<!--    </ul>-->
+<!--</div>-->
+
+<!--<div sec:authorize="hasAuthority('ROLE_vip')">-->
+<!--<div sec:authorize="hasRole('vip')">-->
+<!--<div>-->
+<!--    <h3>VIP会员 - 专享专栏</h3>-->
+<!--    <ul>-->
+<!--        <li><a th:href="@{/detail/vip/1}">vip会员新闻：1</a></li>-->
+<!--        <li><a th:href="@{/detail/vip/2}">vip会员新闻：2</a></li>-->
+<!--    </ul>-->
+<!--</div>-->
+
+
+<div class="ui basic segment body container">
+
+<!--    <首页独有></首页独有>-->
+    <div class="ui basic segment container topcontent" style="border:none">
+        <div class="ui horizontal basic segments" style="border:none;">
+            <div class="ui basic segment topleft" style="background: url('login/img/index/coverimg.png');background-size:cover;background-repeat: no-repeat;" >
+                <a href="#" class="ui circular red  button" style="width:80px;height:35px;padding:0px;padding-top:10px;">今日热闻</a>
+                <div class="ui basic segment title">
+                    <p style="color:#fff;font-size:28px;margin-left:8px;">长期带耳机,对听力有什么影响?</p>
+                </div>
+            </div>
+            <div class="ui basic segment topright" >
+                <div class="ui  segment" style="border:solid red 1px;">
+                    <p>
+                        长期带耳机,对听力有什么影响?
+                    </p>
+                    <span style="color:rgb(195, 200, 194)">3小时前</span>
+                </div>
+                <div class="ui segment">
+                    <p>
+                        怎样增加深度睡眠时间？
+                    </p>
+                    <span style="color:rgb(195, 200, 194)">3小时前</span>
+                </div>
+                <div class="ui  segment">
+                    <p>
+                        热门Top5：年度最大收购案诞生
+                    </p>
+                    <span style="color:rgb(195, 200, 194)">3小时前</span>
+                </div>
+            </div>
+        </div>
+    </div>
+<!--首页独有结束-->
+
+
+    <div class="ui  grid container">
+        <div class="four wide column">
+
+            <div class="ui basic segment" style="background:url('login/img/index/img1.png');background-size: cover;
+         background-repeat: no-repeat;">
+                <div class="ui basic segment title">
+                    <a th:href="@{/detail/visitor/1}">
+                        <span style="color:#fff;font-size:18px;margin-left:0px;">(测试!游客文章1)</span>
+                    </a>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="four wide column">
+            <div class="ui basic segment" style="background:url('login/img/index/img2.png');background-size: cover;
+          background-repeat: no-repeat;">
+                <div class="ui basic segment title">
+                    <span style="color:#fff;font-size:18px;margin-left:0px;">面试官问你的缺点是什么，应该如何回答？</span>
+                </div>
+            </div>
+        </div>
+        <div class="four wide column">
+            <div class="ui basic segment" style="background:url('login/img/index/img3.png');background-size: cover;
+          background-repeat: no-repeat;">
+                <div class="ui basic segment title">
+                    <span style="color:#fff;font-size:18px;margin-left:0px;">小事，必须结婚，不结不行</span>
+                </div>
+            </div>
+        </div>
+        <div class="four wide column">
+            <div class="ui basic segment" style="background:url('login/img/index/img4.png');background-size: cover;
+          background-repeat: no-repeat;">
+                <div class="ui basic segment title">
+                    <span style="color:#fff;font-size:18px;margin-left:0px;">知乎好问题，你们都自创过什么好吃的菜品？</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="ui horizontal basic segments bottomcontent">
+        <div class="ui segment bottomleft" style="border:none;box-shadow:none;">
+            <div class="ui segment article" style="border:none;box-shadow:none;">
+                <div class="ui image">
+
+                    <img th:src="@{/login/img/index/articleimg1.png}"  alt=""/>
+
+                </div>
+                <a th:href="@{/detail/visitor/2}" >
+
+                    <div class="ui segment articlecontent" style="border:none;box-shadow:none;text-align: left;">
+                        <h3><b>(测试!游客文章2)</b></h3>
+                        <p style="margin-left: 0px;text-align: left;width: 380px">
+                            最优效率的生产，应该先让最适合生产这个东西的人去生产，但是随着你想生产的更多，只好让那些最不适合的也上了。
+                        </p>
+                        <span style="color:rgb(206, 208, 204);position:absolute;transform:translate(0,100%);bottom:10%">32分钟前</span>
+                    </div>
+                </a>
+
+            </div>
+            <div class="ui segment article" style="border:none;box-shadow:none;">
+                <div class="ui image">
+                    <img th:src="@{/login/img/index/articleimg2.png}" alt=""/>
+                </div>
+                <div class="ui segment articlecontent" style="border:none;box-shadow:none;text-align: left;">
+                    <h3><b>2016年最引人注目的包装设计，都能说明哪些消费趋势？</b></h3>
+                    <p style="margin-left: 0px;text-align: left;width: 380px">
+                        在这个颜值当道的时代，即使是你对自己的产品本身有着绝对自信，还是花点心思为它乔装打扮一番吧。
+                    </p>
+                    <span style="color:rgb(206, 208, 204);position:absolute;transform:translate(0,100%);bottom:10%">32分钟前</span>
+                </div>
+            </div>
+            <div class="ui segment article" style="border:none;box-shadow:none;">
+                <div class="ui image">
+                    <img th:src="@{/login/img/index/articleimg3.png}" alt=""/>
+                </div>
+                <div class="ui segment articlecontent" style="border:none;box-shadow:none;text-align: left;">
+                    <h3><b>四年前卡梅隆在中国开了家公司，但如今还是默默无闻</b></h3>
+                    <p style="margin-left: 0px;text-align: left;width: 380px">
+                        电影技术公司在中国一向不受重视，哪怕创始人拍出过《阿凡达》。
+                    </p>
+                    <span style="color:rgb(206, 208, 204);position:absolute;transform:translate(0,100%);bottom:10%">32分钟前</span>
+                </div>
+            </div>
+            <div class="ui segment article" style="border:none;box-shadow:none;">
+                <div class="ui image">
+                    <img th:src="@{/login/img/index/articleimg4.png}" alt=""/>
+                </div>
+                <div class="ui segment articlecontent" style="border:none;box-shadow:none;text-align: left;">
+                    <h3><b>大公司头条：智能手表销量三季度跌了一半</b></h3>
+                    <p style="margin-left: 0px;text-align: left;width: 380px">
+                        我们每天早上为你摘取最重要的商业新闻，一切可能改变我们生活的公司都在其列。
+                    </p>
+                    <span style="color:rgb(206, 208, 204);position:absolute;transform:translate(0,100%);bottom:10%">32分钟前</span>
+                </div>
+            </div>
+            <div class="ui segment article" style="border:none;box-shadow:none;">
+                <div class="ui image">
+                    <img th:src="@{/login/img/index/articleimg5.png}" alt=""/>
+                </div>
+                <div class="ui segment articlecontent" style="border:none;box-shadow:none;text-align: left;">
+                    <h3><b>既不缺钱又不缺人，为何你的直播系统还是做砸了</b></h3>
+                    <p style="margin-left: 0px;text-align: left;width: 380px">
+                        我来给大家讲个故事。
+                    </p>
+                    <span style="color:rgb(206, 208, 204);position:absolute;transform:translate(0,100%);bottom:10%">32分钟前</span>
+                </div>
+            </div>
+            <button type="button" name="button" class="ui inverted  red huge button"
+                    style="width:200px;height:40px;margin-left:300px;margin-top:30px;padding-top:8px;">浏览更多
+            </button>
+        </div>
+        <div class="ui segment bottomright" style="border:none;box-shadow:none;">
+            <div class="ui red segment best">
+                <h4 class="ui center aligned header"><b>编辑推荐</b></h4>
+                <div class="ui segment top3" style="background:url('login/img/index/sideimg1.png');
+            background-size:cover;background-repeat:no-repeat;border-radius:0;">
+                    <div class="sidebutton">
+                        <img th:src="@{/login/img/index/redtag.png}"  alt=""/>
+                        <p >Top1</p>
+                    </div>
+                    <a th:href="@{/detail/visitor/3}">
+                        <div class="ui basic segment title" style="height:40px;padding-top:2px;">
+                            <span style="color:#fff;font-size:14px;margin-left:0px;">(测试!游客文章3)</span>
+                        </div>
+                    </a>
+
+                </div>
+                <div class="ui segment top3" style="background:url('login/img/index/sideimg2.png');
+            background-size:cover;background-repeat:no-repeat;border-radius:0;">
+                    <div class="sidebutton">
+                        <img th:src="@{/login/img/index/yellowtag.png}"  alt=""/>
+                        <p >Top2</p>
+                    </div>
+                    <div class="ui basic segment title" style="height:40px;padding-top:2px;">
+                        <span style="color:#fff;font-size:14px;margin-left:0px;">硅谷收益最高的风投说，钱太多是这个市场最大的问题</span>
+                    </div>
+                </div>
+                <div class="ui segment top3" style="background:url('login/img/index/sideimg3.png');
+            background-size:cover;background-repeat:no-repeat;border-radius:0;">
+                    <div class="sidebutton">
+                        <img th:src="@{/login/img/index/bluetag.png}"  alt=""/>
+                        <p >Top3</p>
+                    </div>
+                    <div class="ui basic segment title" style="height:40px;padding-top:2px;">
+                        <span style="color:#fff;font-size:14px;margin-left:0px;">看起来不起眼的日常设备，可能是未来网络攻击的对象</span>
+                    </div>
+                </div>
+                <div class="ui segment bestlast">
+                    <img th:src="@{/login/img/index/Triangle.png}" style="width: 7px;" alt=""/>
+                    <p style="margin-left: 0px;text-align: left;color: black;width: 200px">
+                        这部别出心裁的漫画，讲的是阿富汗战争时期不为人知的历史
+                    </p>
+                    <p style="width: 50px;color:rgb(206, 208, 204)">3分钟前</p>
+                </div>
+                <div class="ui segment bestlast">
+                    <img th:src="@{/login/img/index/Triangle.png}" style="width: 7px;" alt=""/>
+                    <p style="margin-left: 0px;text-align: left;color: black;width: 200px">
+                        华纳兄弟将拍摄的新片，讲述的是亚洲富豪的故事
+                    </p>
+                    <p style="width: 50px;color:rgb(206, 208, 204)">3分钟前</p>
+                </div>
+                <div class="ui segment bestlast">
+                    <img th:src="@{/login/img/index/Triangle.png}" style="width: 7px;" alt=""/>
+                    <p style="margin-left: 0px;text-align: left;color: black;width: 200px">
+                        美国各大银行纷纷关闭分行，说要向数字化转型
+                    </p>
+                    <p style="width: 50px;color:rgb(206, 208, 204)">3分钟前</p>
+                    <!--                    <span>3分钟前</span>-->
+                </div>
+                <div class="ui segment bestlast">
+                    <img th:src="@{/login/img/index/Triangle.png}" style="width: 7px;" alt=""/>
+                    <p style="margin-left: 0px;text-align: left;color: black;width: 200px">
+                        在医院看病也用微信支付，腾讯这回可能想多了
+                    </p>
+                    <p style="width: 50px;color:rgb(206, 208, 204)">3分钟前</p>
+                    <!--                    <span>3分钟前</span>-->
+                </div>
+                <div class="ui segment bestlast">
+                    <img th:src="@{/login/img/index/Triangle.png}" style="width: 7px;" alt=""/>
+                    <p style="margin-left: 0px;text-align: left;color: black;width: 200px">
+                        马化腾说，微信最早就是个邮箱,你入局了吗?
+                    </p>
+                    <p style="width: 50px;color:rgb(206, 208, 204)">3分钟前</p>
+                    <!--                    <span>3分钟前</span>-->
+                </div>
+                <div class="ui segment bestlast">
+                    <img th:src="@{/login/img/index/Triangle.png}" style="width: 7px;" alt=""/>
+                    <p style="margin-left: 0px;text-align: left;color: black;width: 200px">
+                        拿了这笔钱后，全球最红新媒体之一BuzzFeed值17亿美元了
+                    </p>
+                    <p style="width: 50px;color:rgb(206, 208, 204)">3分钟前</p>
+                    <!--                    <span>3分钟前</span>-->
+                </div>
+                <div class="ui segment bestlast">
+                    <img th:src="@{/login/img/index/Triangle.png}" style="width: 7px;" alt=""/>
+                    <p style="margin-left: 0px;text-align: left;color: black;width: 200px">
+                        意想不到的童年回忆杀，《蜡笔小新》最新剧场版来了内地
+                    </p>
+                    <p style="width: 50px;color:rgb(206, 208, 204)">3分钟前</p>
+                    <!--                    <span>3分钟前</span>-->
+                </div>
+                <div class="ui image">
+                    <img th:src="@{/login/img/index/ad.gif}" alt="" style="width:300px;"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--网页尾部-->
+
+<div class="ui basic segment bottomblack">
+    <div class="ui image" style="margin-right: 90%">
+        <img th:src="@{/login/img/index/white_zhiribao.png}" alt=""/>
+    </div>
+    <p style="color:red;margin-top:50px;font-size:20px; text-align:left">
+        关于我们<span style="color:rgb(143, 143, 143)">｜</span>加入我们<span style="color:rgb(143, 143, 143)">｜</span>联系我们｜寻求报道
+    </p>
+    <p style="color:white;font-size:20px;text-align: left">
+        反馈建议:<span style="color:red;">ymx134@126.com</span>
+    </p>
+    <div class="ui  basic segment wechat">
+        <img th:src="@{/login/img/index/qrcode.png}" style="margin-left:38px;"/>
+        <h2 class="ui header" style="color:rgb(255, 255, 255);margin-left:70px;">扫码加微信号</h2>
+    </div>
+    <button type="button" name="button" class="ui circular red button backtotop">
+        <a href="/">
+            <img th:src="@{/login/img/index/upicon.png}" style="position:absolute;left:18%;top:10%;">
+            <img th:src="@{/login/img/index/TOP.png}" style="position:absolute;left:18%;bottom:28%;">
+        </a>
+
+    </button>
+</div>
+<div class="ui basic segment bottomwhite">
+    <p>
+        Designed by 油焖虾
+    </p>
+    <p>
+        Developed by YMX
+    </p>
+    <p style="position:absolute;right:250px;top:40px;">
+        京ICP备12345678号
+    </p>
+</div>
+<!--网页尾部结束-->
+
+</body>
+</html>
+

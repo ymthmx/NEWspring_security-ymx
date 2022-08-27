@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ymxexample.mapper.CustomerMapper">
+    <select
+            id="getCustomerByUsername"
+            parameterType="String"
+            resultType="Customer"
+    >
+        select * from t_customer
+        where username = #{username}
+    </select>
+
+
+    <!-- 根据用户名 查询 对应的用户信息  -->
+    <select
+            id="getCustomerListByUsername"
+
+            resultType="Customer"
+    >
+        select cu.*
+        from t_customer cu
+        where cu.username = #{username}
+    </select>
+
+
+    <!--  查询 所有的用户信息  -->
+    <select
+            id="getAllCustomer"
+            resultType="Customer"
+    >
+        select cu.*
+        from t_customer cu
+            limit  #{page}  , 5
+
+    </select>
+<select id="queryCustomerNum" resultType="Integer">
+    select count(*) from t_customer;
+</select>
+
+
+    <!-- 用户名修改-->
+    <update id="updateUsernameByUsername"
+            parameterType="Customer">
+        update t_customer
+        set username = #{newusername}
+        where username = #{oldusername}
+    </update>
+
+    <!-- 密码修改-->
+    <update id="updatePasswordByUsername"
+            parameterType="Customer">
+        update t_customer
+        set password = #{newpassword}
+        where username = #{username}
+    </update>
+
+    <select
+            id="getIdByUsername"
+            parameterType="String"
+            resultType="Integer"
+    >
+        select id from t_customer
+        where username = #{username}
+    </select>
+
+    <!-- 向数据库添加用户账号和密码 -->
+    <insert id="insertCustomer" parameterType="String" >
+        insert into t_customer(username,password)
+            value (#{username},#{password})
+    </insert>
+
+<!--            通过用户名查询用户密码-->
+    <select id="queryPasswordByUsername" resultType="String">
+        select password from t_customer where username = #{username}
+    </select>
+</mapper>

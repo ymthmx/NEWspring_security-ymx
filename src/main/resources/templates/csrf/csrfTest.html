@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>修改用户</title>
+    <link th:href="@{/login/css/mycss.css}" rel="stylesheet"/>
+</head>
+<body>
+<div align="center">
+    <form method="post" th:action="@{/updateUser}">
+        <!--csrf 防护： 添加如下代码-->
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+        <label>用户名:
+            <input type="text" name="username"/>
+        </label><br/>
+        <button type="submit">修改用户名</button>
+    </form>
+</div>
+</body>
+</html>

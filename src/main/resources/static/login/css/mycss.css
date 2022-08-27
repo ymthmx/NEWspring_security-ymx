@@ -1,0 +1,20 @@
+div,h1,h2{
+    text-align: center;
+}
+body {
+    background: rgba(248, 236, 236, 0.59);
+}
+ul li {
+    list-style: none;
+}
+p {
+    text-align: center;
+    width: 1000px;
+    margin: 0 auto;
+}
+
+div>img {
+    width: 100px;
+    display: inline-block;
+    horiz-align: center;
+}
